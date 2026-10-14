@@ -1,6 +1,8 @@
 import Badge from '@/components/ui/Badge'
 import Loader from '@/components/ui/Loader'
 import Notice from '@/components/ui/Notice'
+import PageHeader from '@/components/ui/PageHeader'
+import WidgetCard from '@/components/ui/WidgetCard'
 import { useFetch } from '@/hooks/useFetch'
 import { lireStats } from '@/features/admin/admin.api'
 import { TYPES_DOCUMENT, VERDICTS } from '@/utils/constants'
@@ -32,16 +34,15 @@ export default function Statistiques() {
   if (error) return <Notice>{error}</Notice>
 
   return (
-    <section>
-      <h1>Statistiques du test</h1>
-      <p className="hint">
-        Seuils fixés avant le test : ne pas les modifier après les résultats. Aucun verdict n'est rendu
-        sous 10 cas.
-      </p>
+    <div className="dashboard-layout">
+      <PageHeader
+        title="Statistiques du test"
+        description="Seuils fixés avant le test. Aucun verdict sous 10 cas."
+      />
 
-      <h2>Seuils</h2>
+      <WidgetCard title="Seuils">
       <div className="table-wrap">
-        <table>
+        <table className="data-table">
           <thead>
             <tr><th>Hypothèse</th><th>Résultat</th><th>Verdict</th><th>Règle</th><th>Dénominateur</th></tr>
           </thead>
@@ -62,13 +63,14 @@ export default function Statistiques() {
           </tbody>
         </table>
       </div>
+      </WidgetCard>
 
-      <h2>Délais réels des établissements</h2>
+      <WidgetCard title="Délais réels des établissements">
       {data.delaisReels.length === 0 ? (
         <p className="hint">Aucun délai mesuré pour l'instant.</p>
       ) : (
         <div className="table-wrap">
-          <table>
+          <table className="data-table">
             <thead>
               <tr><th>Établissement</th><th>Document</th><th>Ancien</th><th>Cas</th><th>Moyenne (j)</th><th>Min</th><th>Max</th></tr>
             </thead>
@@ -88,14 +90,16 @@ export default function Statistiques() {
           </table>
         </div>
       )}
+      </WidgetCard>
 
-      <h2>Échéances et pièces de remplacement</h2>
+      <WidgetCard title="Échéances et pièces de remplacement">
       <p>
         Échéances tenues : <strong>{data.echeances.tenues}</strong> · manquées : <strong>{data.echeances.manquees}</strong>
       </p>
       <p>Cas où une pièce de remplacement a suffi : <strong>{data.piecesRemplacementSuffisantes}</strong></p>
+      </WidgetCard>
 
-      <h2>Refus de payer</h2>
+      <WidgetCard title="Refus de payer">
       {data.refusDePayer.length === 0 ? (
         <p className="hint">Aucun refus consigné.</p>
       ) : (
@@ -105,6 +109,7 @@ export default function Statistiques() {
           ))}
         </ul>
       )}
-    </section>
+      </WidgetCard>
+    </div>
   )
 }

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Button from '@/components/ui/Button'
 import Field from '@/components/ui/Field'
 import Notice from '@/components/ui/Notice'
+import WidgetCard from '@/components/ui/WidgetCard'
 import { useAuth } from '@/hooks/useAuth'
 import { messageErreur } from '@/services/api'
 
@@ -30,21 +31,40 @@ export default function Login() {
   }
 
   return (
-    <section className="narrow">
-      <h1>Se connecter</h1>
-      <form onSubmit={onSubmit} className="form">
-        <Field label="E-mail">
-          {(id) => <input id={id} className="input" type="email" autoComplete="email" required
-            value={email} onChange={(e) => setEmail(e.target.value)} />}
-        </Field>
-        <Field label="Mot de passe">
-          {(id) => <input id={id} className="input" type="password" autoComplete="current-password" required
-            value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} />}
-        </Field>
-        <Notice>{erreur}</Notice>
-        <Button type="submit" loading={loading}>Se connecter</Button>
-      </form>
-      <p className="hint">Pas encore de compte ? <Link to="/inscription">Créer un compte</Link></p>
-    </section>
+    <div className="auth-layout">
+      <WidgetCard title="Connexion" description="Accédez à votre espace famille ou administration." className="auth-card">
+        <form onSubmit={onSubmit} className="form">
+          <Field label="E-mail">
+            {(id) => (
+              <input
+                id={id}
+                className="input"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            )}
+          </Field>
+          <Field label="Mot de passe">
+            {(id) => (
+              <input
+                id={id}
+                className="input"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={motDePasse}
+                onChange={(e) => setMotDePasse(e.target.value)}
+              />
+            )}
+          </Field>
+          <Notice>{erreur}</Notice>
+          <Button type="submit" loading={loading}>Se connecter</Button>
+        </form>
+        <p className="hint">Pas encore de compte ? <Link to="/inscription">Créer un compte famille</Link></p>
+      </WidgetCard>
+    </div>
   )
 }

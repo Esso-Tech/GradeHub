@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import Loader from '@/components/ui/Loader'
 import Notice from '@/components/ui/Notice'
+import PageHeader from '@/components/ui/PageHeader'
+import WidgetCard from '@/components/ui/WidgetCard'
 import MobileMoneyForm from '@/components/paiement/MobileMoneyForm'
 import { useFetch } from '@/hooks/useFetch'
 import { lireDemande } from '@/features/demandes/demandes.api'
@@ -31,7 +33,6 @@ export default function Paiement() {
       : d.paiements.some((p) => p.type === 'ENVOI' && p.statut === 'CONFIRME')
     : false
 
-  // Après le lancement du paiement : on vérifie toutes les 5 s si l'opérateur a confirmé
   useEffect(() => {
     if (!attente) return
     const t = setInterval(() => reload(true), POLL_MS)
@@ -59,38 +60,46 @@ export default function Paiement() {
   if (error) return <Notice>{error}</Notice>
   if (!d) return null
 
+  const titre = type === 'SUIVI' ? 'Payer le suivi' : "Payer l'envoi"
+
   return (
-    <section className="narrow">
-      <h1>{type === 'SUIVI' ? 'Payer le suivi' : "Payer l'envoi"}</h1>
+    <div className="dashboard-layout page--narrow">
+      <PageHeader
+        title={titre}
+        description={`Demande ${d.reference}`}
+        actions={<Link className="btn btn-secondary btn-sm" to={`/famille/demandes/${id}`}>Retour</Link>}
+      />
 
       {dejaPaye && !attente ? (
-        <>
-          <Notice tone="success">Ce paiement est déjà réglé.</Notice>
-          <p><Link to={`/famille/demandes/${id}`}>Voir ma demande</Link></p>
-        </>
+        <WidgetCard title="Paiement réglé">
+          <Notice tone="success">Ce paiement est déjà enregistré.</Notice>
+          <Link className="btn btn-primary" to={`/famille/demandes/${id}`}>Voir ma demande</Link>
+        </WidgetCard>
       ) : type === 'ENVOI' && !d.coutEnvoiXof ? (
-        <Notice tone="info">Le coût d'envoi n'est pas encore défini. Nous vous prévenons dès qu'il l'est.</Notice>
+        <WidgetCard title="Envoi">
+          <Notice tone="info">Le coût d&apos;envoi n&apos;est pas encore défini. Nous vous prévenons dès qu&apos;il l&apos;est.</Notice>
+        </WidgetCard>
       ) : attente ? (
-        <div className="card" role="status">
-          <h3>Confirmez sur votre téléphone</h3>
-          <p>
-            Une demande de {formatXof(montant)} vient d'être envoyée. Validez-la avec votre code.
-            Cette page se met à jour dès que le paiement est reçu.
+        <WidgetCard title="Confirmation mobile money" description="En attente de validation sur votre téléphone.">
+          <p role="status">
+            Une demande de {formatXof(montant)} vient d&apos;être envoyée. Validez-la avec votre code.
+            Cette page se met à jour dès réception du paiement.
           </p>
-          <p className="hint">Rien ne s'est passé après quelques minutes ? Vérifiez votre solde, puis réessayez.</p>
-          <p><button className="pwa-link-dark" onClick={() => setAttente(false)}>Réessayer le paiement</button></p>
-        </div>
+          <p className="hint">Rien ne se passe après quelques minutes ? Vérifiez votre solde, puis réessayez.</p>
+          <button type="button" className="btn-link" onClick={() => setAttente(false)}>
+            Réessayer le paiement
+          </button>
+        </WidgetCard>
       ) : (
-        <>
-          <div className="card">
-            <p>Demande {d.reference}</p>
-            <p><strong>{formatXof(montant)}</strong></p>
-            {type === 'SUIVI' && <p className="hint">L'envoi de l'original est facturé en plus, au coût réel.</p>}
-          </div>
+        <WidgetCard title="Montant à régler">
+          <p className="pay-amount">{formatXof(montant)}</p>
+          {type === 'SUIVI' && (
+            <p className="hint">L&apos;envoi de l&apos;original est facturé en plus, au coût réel.</p>
+          )}
           <Notice>{erreur}</Notice>
           <MobileMoneyForm montantLabel={formatXof(montant)} onSubmit={payer} loading={occupe} />
-        </>
+        </WidgetCard>
       )}
-    </section>
+    </div>
   )
 }

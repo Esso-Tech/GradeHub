@@ -4,6 +4,8 @@ import Field from '@/components/ui/Field'
 import Loader from '@/components/ui/Loader'
 import Notice from '@/components/ui/Notice'
 import Badge from '@/components/ui/Badge'
+import PageHeader from '@/components/ui/PageHeader'
+import WidgetCard from '@/components/ui/WidgetCard'
 import { useFetch } from '@/hooks/useFetch'
 import { listerEtablissements } from '@/features/etablissements/etablissements.api'
 import { creerEtablissement, definirDelai } from '@/features/admin/admin.api'
@@ -64,23 +66,25 @@ export default function Etablissements() {
   }
 
   return (
-    <section>
-      <h1>Établissements</h1>
-      <p className="hint">
-        Tant qu'aucun délai n'est mesuré pour un établissement, aucun délai n'est annoncé aux familles.
-      </p>
+    <div className="dashboard-layout">
+      <PageHeader
+        title="Établissements"
+        description="Délais mesurés et partenaires. Sans délai mesuré, aucune promesse n'est faite aux familles."
+      />
       {loading && <Loader />}
       <Notice>{error || erreur}</Notice>
       {data && (
-        <ul className="list list-stack">
-          {data.map((e) => (
-            <LigneDelai key={`${e.id}-${e.delaiMesureJours}`} etab={e}
-              onSaved={() => reload(true)} onError={setErreur} />
-          ))}
-        </ul>
+        <WidgetCard title="Liste des établissements">
+          <ul className="list list-stack">
+            {data.map((e) => (
+              <LigneDelai key={`${e.id}-${e.delaiMesureJours}`} etab={e}
+                onSaved={() => reload(true)} onError={setErreur} />
+            ))}
+          </ul>
+        </WidgetCard>
       )}
 
-      <h2>Ajouter un établissement</h2>
+      <WidgetCard title="Ajouter un établissement">
       <form className="form" onSubmit={ajouter}>
         <Field label="Nom">
           {(id) => <input id={id} className="input" required minLength={2} value={form.nom}
@@ -102,6 +106,7 @@ export default function Etablissements() {
         </label>
         <Button type="submit" loading={occupe}>Ajouter</Button>
       </form>
-    </section>
+      </WidgetCard>
+    </div>
   )
 }

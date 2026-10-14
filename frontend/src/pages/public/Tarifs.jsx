@@ -1,26 +1,29 @@
+import WidgetCard from '@/components/ui/WidgetCard'
 import { FRAIS_SUIVI_XOF } from '@/utils/constants'
 import { formatXof } from '@/utils/format'
 
 export default function Tarifs() {
   return (
-    <section>
-      <h1>Tarifs</h1>
-      <div className="card">
-        <h3>Suivi d'un document</h3>
-        <p><strong>{formatXof(FRAIS_SUIVI_XOF)}</strong> par document, payés au dépôt de la demande.</p>
-        <p className="hint">Dépôt, suivi auprès de l'établissement, scan et avis à chaque étape.</p>
-      </div>
-      <div className="card">
-        <h3>Envoi de l'original</h3>
-        <p>Facturé en plus, au coût réel de l'envoi.</p>
-      </div>
-      <div className="card">
-        <h3>Documents de plus de deux ans</h3>
-        <p>Même prix. Le délai de traitement est majoré de 50 %.</p>
-      </div>
-      <div className="card">
-        <h3>Formule express</h3>
-        <p>Délai réduit contre un prix majoré. Le prix sera communiqué prochainement.</p>
+    <section className="tarifs-page">
+      <header className="page-header page-header--compact">
+        <h1 className="page-header__title">Tarifs</h1>
+        <p className="page-header__desc">Transparence sur les frais de suivi et d&apos;envoi.</p>
+      </header>
+      <div className="tarifs-grid">
+        <WidgetCard title="Suivi d'un document">
+          <p className="tarif-price">{formatXof(FRAIS_SUIVI_XOF)}</p>
+          <p>Par document, payés au dépôt de la demande.</p>
+          <p className="hint">Dépôt, suivi auprès de l&apos;établissement, scan et avis à chaque étape.</p>
+        </WidgetCard>
+        <WidgetCard title="Envoi de l'original">
+          <p>Facturé en plus, au coût réel de l&apos;envoi.</p>
+        </WidgetCard>
+        <WidgetCard title="Documents de plus de deux ans">
+          <p>Même prix. Le délai de traitement est majoré de 50 %.</p>
+        </WidgetCard>
+        <WidgetCard title="Formule express">
+          <p>Délai réduit contre un prix majoré. Tarif communiqué prochainement.</p>
+        </WidgetCard>
       </div>
     </section>
   )

@@ -2,7 +2,9 @@ import { Link, useParams } from 'react-router-dom'
 import Button from '@/components/ui/Button'
 import Loader from '@/components/ui/Loader'
 import Notice from '@/components/ui/Notice'
+import PageHeader from '@/components/ui/PageHeader'
 import StatutBadge from '@/components/ui/StatutBadge'
+import WidgetCard from '@/components/ui/WidgetCard'
 import StatutTimeline from '@/components/demandes/StatutTimeline'
 import JournalList from '@/components/demandes/JournalList'
 import ScanViewer from '@/components/documents/ScanViewer'
@@ -24,60 +26,72 @@ export default function DetailDemande() {
     d.coutEnvoiXof && !d.paiements.some((p) => p.type === 'ENVOI' && p.statut === 'CONFIRME')
 
   return (
-    <section>
-      <p><Link to="/famille">← Mes demandes</Link></p>
-      <h1>{TYPES_DOCUMENT[d.typeDocument]}</h1>
-      <p>
-        <StatutBadge statut={d.statut} />{' '}
-        <span className="hint">{d.reference}</span>
-      </p>
+    <div className="dashboard-layout">
+      <PageHeader
+        title={TYPES_DOCUMENT[d.typeDocument]}
+        description={`${d.elevePrenom} ${d.eleveNom} · ${d.reference}`}
+        actions={
+          <>
+            <StatutBadge statut={d.statut} />
+            <Link className="btn btn-secondary btn-sm" to="/famille">Retour</Link>
+          </>
+        }
+      />
 
       {!suiviPaye && d.statut !== 'ANNULEE' && (
-        <div className="card">
-          <h3>Paiement en attente</h3>
+        <WidgetCard title="Paiement en attente">
           <p>Nous commençons le suivi dès réception de {formatXof(d.fraisSuiviXof + d.fraisExpressXof)}.</p>
-          <Link className="btn btn-primary" to={`/famille/demandes/${d.id}/paiement`}>Payer maintenant</Link>
-        </div>
+          <Link className="btn btn-primary" to={`/famille/demandes/${d.id}/paiement`}>
+            Payer maintenant
+          </Link>
+        </WidgetCard>
       )}
 
-      <StatutTimeline statut={d.statut} />
+      <WidgetCard title="Avancement" description="Étapes de traitement de votre dossier.">
+        <StatutTimeline statut={d.statut} />
+      </WidgetCard>
 
-      <div className="card">
+      <WidgetCard title="Informations du dossier">
         <dl className="dl">
           <dt>Élève</dt><dd>{d.elevePrenom} {d.eleveNom}</dd>
           <dt>Établissement</dt><dd>{d.etablissement.nom}</dd>
           <dt>Date limite</dt>
-          <dd>{d.echeanceExterieure ? `${formatDate(d.echeanceExterieure)}${d.motifEcheance ? ` · ${d.motifEcheance}` : ''}` : 'Aucune'}</dd>
+          <dd>
+            {d.echeanceExterieure
+              ? `${formatDate(d.echeanceExterieure)}${d.motifEcheance ? ` · ${d.motifEcheance}` : ''}`
+              : 'Aucune'}
+          </dd>
           <dt>Délai annoncé</dt>
           <dd>{d.delaiAnnonceJours != null ? `${d.delaiAnnonceJours} jours` : 'Pas encore communiqué'}</dd>
         </dl>
-      </div>
+      </WidgetCard>
 
       {d.documents.length > 0 && (
-        <div className="card">
-          <h3>Votre document est disponible</h3>
-          <p className="hint">Le lien du scan est valable quelques minutes. Rouvrez-le si besoin.</p>
+        <WidgetCard title="Document scanné" description="Lien temporaire sécurisé.">
           <ScanViewer demandeId={d.id} />
-        </div>
+        </WidgetCard>
       )}
 
       {d.coutEnvoiXof && (
-        <div className="card">
-          <h3>Envoi de l'original</h3>
-          <p>Coût d'envoi : {formatXof(d.coutEnvoiXof)} · {d.adresseEnvoi}</p>
+        <WidgetCard title="Envoi de l'original">
+          <p>Coût d&apos;envoi : {formatXof(d.coutEnvoiXof)} · {d.adresseEnvoi}</p>
           {envoiAPayer ? (
             <Link className="btn btn-primary" to={`/famille/demandes/${d.id}/paiement?type=ENVOI`}>
-              Payer l'envoi
+              Payer l&apos;envoi
             </Link>
           ) : (
             <p className="hint">Envoi réglé.</p>
           )}
-        </div>
+        </WidgetCard>
       )}
 
-      <h2>Suivi</h2>
-      <JournalList journal={d.journal} vueFamille />
-      <p><Button variant="secondary" onClick={() => reload(true)}>Actualiser</Button></p>
-    </section>
+      <WidgetCard
+        title="Historique"
+        description="Notifications et événements visibles pour votre famille."
+        actions={<Button variant="secondary" onClick={() => reload(true)}>Actualiser</Button>}
+      >
+        <JournalList journal={d.journal} vueFamille />
+      </WidgetCard>
+    </div>
   )
 }
