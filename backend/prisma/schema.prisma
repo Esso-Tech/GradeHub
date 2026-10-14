@@ -1,0 +1,196 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  FAMILLE
+  ADMIN
+}
+
+enum TypeEtablissement {
+  PUBLIC
+  PRIVE
+}
+
+enum TypeDocument {
+  CEPD
+  BEPC
+  RELEVE_NOTES
+}
+
+enum StatutDemande {
+  EN_ATTENTE_PAIEMENT
+  PAYEE
+  DEPOSEE_ETABLISSEMENT
+  PIECE_MANQUANTE
+  EN_COURS
+  SIGNEE
+  SCAN_ENVOYE
+  ORIGINAL_ENVOYE
+  CLOTUREE
+  ANNULEE
+}
+
+enum TypePaiement {
+  SUIVI
+  ENVOI
+}
+
+enum Operateur {
+  TMONEY
+  FLOOZ
+}
+
+enum StatutPaiement {
+  EN_ATTENTE
+  CONFIRME
+  ECHOUE
+  REFUSE
+}
+
+enum Canal {
+  SMS
+  WHATSAPP
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  telephone    String
+  nom          String
+  passwordHash String
+  role         Role      @default(FAMILLE)
+  createdAt    DateTime  @default(now())
+  demandes     Demande[]
+}
+
+model Etablissement {
+  id               String            @id @default(cuid())
+  nom              String
+  type             TypeEtablissement
+  ville            String            @default("Lomé")
+  contact          String?
+  accordCadreSigne Boolean           @default(false)
+  // Délai réel mesuré (jours). Tant qu'il est null, aucun délai n'est annoncé au client.
+  delaiMesureJours Int?
+  actif            Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  demandes         Demande[]
+}
+
+model Demande {
+  id                          String        @id @default(cuid())
+  reference                   String        @unique
+  userId                      String
+  user                        User          @relation(fields: [userId], references: [id])
+  etablissementId             String
+  etablissement               Etablissement @relation(fields: [etablissementId], references: [id])
+
+  typeDocument                TypeDocument
+  anneeSortie                 Int
+  eleveNom                    String
+  elevePrenom                 String
+  dateNaissance               DateTime?
+
+  urgence                     Boolean       @default(false)
+  echeanceExterieure          DateTime?
+  motifEcheance               String?
+
+  statut                      StatutDemande @default(EN_ATTENTE_PAIEMENT)
+  ancien                      Boolean       @default(false)
+  delaiAnnonceJours           Int?
+
+  fraisSuiviXof               Int
+  fraisExpressXof             Int           @default(0)
+  coutEnvoiXof                Int?
+  adresseEnvoi                String?
+
+  nbDeplacements              Int           @default(0)
+  echeanceTenue               Boolean?
+  pieceRemplacementSuffisante Boolean?
+
+  dateDepotEtablissement      DateTime?
+  dateSignature               DateTime?
+  dateObtention               DateTime?
+  clotureeLe                  DateTime?
+
+  createdAt                   DateTime      @default(now())
+  updatedAt                   DateTime      @updatedAt
+
+  mandat                      Mandat?
+  paiements                   Paiement[]
+  documents                   Document[]
+  journal                     JournalEvenement[]
+  notifications               Notification[]
+
+  @@index([statut])
+  @@index([etablissementId, typeDocument])
+}
+
+model Mandat {
+  id                       String   @id @default(cuid())
+  demandeId                String   @unique
+  demande                  Demande  @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+  mandantNom               String
+  consentementDepot        Boolean
+  consentementTransmission Boolean
+  accepteLe                DateTime @default(now())
+  ip                       String?
+}
+
+model Paiement {
+  id               String         @id @default(cuid())
+  demandeId        String
+  demande          Demande        @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+  type             TypePaiement
+  montantXof       Int
+  operateur        Operateur
+  telephone        String
+  statut           StatutPaiement @default(EN_ATTENTE)
+  referenceExterne String?        @unique
+  // Consigner chaque refus de payer avec sa raison
+  motifRefus       String?
+  createdAt        DateTime       @default(now())
+  confirmeLe       DateTime?
+}
+
+model Document {
+  id           String    @id @default(cuid())
+  demandeId    String
+  demande      Demande   @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+  storageKey   String
+  mimeType     String
+  tailleOctets Int
+  createdAt    DateTime  @default(now())
+  supprimeLe   DateTime?
+}
+
+model JournalEvenement {
+  id          String         @id @default(cuid())
+  demandeId   String
+  demande     Demande        @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+  type        String
+  statutAvant StatutDemande?
+  statutApres StatutDemande?
+  message     String?
+  auteurId    String?
+  createdAt   DateTime       @default(now())
+
+  @@index([demandeId, createdAt])
+}
+
+model Notification {
+  id           String   @id @default(cuid())
+  demandeId    String
+  demande      Demande  @relation(fields: [demandeId], references: [id], onDelete: Cascade)
+  canal        Canal
+  destinataire String
+  contenu      String
+  envoyee      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}
