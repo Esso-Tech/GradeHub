@@ -5,6 +5,7 @@ import Loader from '@/components/ui/Loader'
 import Notice from '@/components/ui/Notice'
 import Badge from '@/components/ui/Badge'
 import PageHeader from '@/components/ui/PageHeader'
+import Select from '@/components/ui/Select'
 import WidgetCard from '@/components/ui/WidgetCard'
 import { useFetch } from '@/hooks/useFetch'
 import { listerEtablissements } from '@/features/etablissements/etablissements.api'
@@ -92,11 +93,11 @@ export default function Etablissements() {
         </Field>
         <Field label="Type">
           {(id) => (
-            <select id={id} className="input" value={form.type}
+            <Select id={id} value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}>
               <option value="PUBLIC">Public</option>
               <option value="PRIVE">Privé</option>
-            </select>
+            </Select>
           )}
         </Field>
         <label className="check">

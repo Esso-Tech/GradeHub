@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { IconBell, IconCap, IconGlobe, IconMail, IconMenu, IconSearch } from '@/components/ui/Icons'
+import { IconMenu, IconSearch } from '@/components/ui/Icons'
 import { useAuth } from '@/hooks/useAuth'
 
 function initials(nom) {
@@ -12,17 +12,38 @@ function initials(nom) {
 
 const ROLE_LABEL = { FAMILLE: 'Famille', ADMIN: 'Administrateur' }
 
-export default function TopBar({ onMenuOpen, badgeCount = 0 }) {
+const SETTINGS_PATH = { famille: '/famille/parametres', admin: '/admin/parametres' }
+
+export default function TopBar({ shell, onMenuOpen }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [q, setQ] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef(null)
+
+  const settingsPath = SETTINGS_PATH[shell.variant] ?? '/famille/parametres'
+
+  useEffect(() => {
+    if (!menuOpen) return
+    function onPointerDown(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false)
+    }
+    function onKeyDown(e) {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [menuOpen])
 
   function onSearch(e) {
     e.preventDefault()
     const term = q.trim()
     if (!term) return
-    if (user?.role === 'ADMIN') {
+    if (shell.variant === 'admin') {
       navigate(`/admin/demandes?recherche=${encodeURIComponent(term)}`)
       return
     }
@@ -35,37 +56,34 @@ export default function TopBar({ onMenuOpen, badgeCount = 0 }) {
     navigate('/')
   }
 
+  function onSettings() {
+    setMenuOpen(false)
+    navigate(settingsPath)
+  }
+
   return (
     <header className="topbar">
       <button type="button" className="topbar-menu-btn" onClick={onMenuOpen} aria-label="Ouvrir le menu">
         <IconMenu />
       </button>
       <div className="topbar-welcome">
-        <IconCap className="welcome-cap" />
-        <span>Bienvenue sur GRADE HUB</span>
+        <span>{shell.welcome}</span>
       </div>
       <form className="topbar-search" onSubmit={onSearch} role="search">
         <IconSearch />
         <input
           type="search"
-          placeholder="Rechercher une demande, un élève…"
+          placeholder={
+            shell.variant === 'admin'
+              ? 'Rechercher une demande, un élève…'
+              : 'Rechercher dans mes demandes…'
+          }
           value={q}
           onChange={(e) => setQ(e.target.value)}
           aria-label="Rechercher"
         />
       </form>
-      <div className="topbar-actions">
-        <div className="topbar-lang" title="Langue">
-          <IconGlobe size={18} />
-          <span>Français</span>
-        </div>
-        <button type="button" className="topbar-icon-btn" aria-label="Notifications">
-          <IconBell size={20} />
-          {badgeCount > 0 && <span className="topbar-badge">{badgeCount}</span>}
-        </button>
-        <button type="button" className="topbar-icon-btn" aria-label="Messages">
-          <IconMail size={20} />
-        </button>
+      <div className="topbar-actions" ref={menuRef}>
         <div className="topbar-user-wrap">
           <button
             type="button"
@@ -83,6 +101,10 @@ export default function TopBar({ onMenuOpen, badgeCount = 0 }) {
           </button>
           {menuOpen && (
             <div className="topbar-dropdown" role="menu">
+              <button type="button" role="menuitem" onClick={onSettings}>
+                Paramètres du compte
+              </button>
+              <div className="topbar-dropdown__sep" role="separator" />
               <button type="button" role="menuitem" onClick={onLogout}>
                 Se déconnecter
               </button>

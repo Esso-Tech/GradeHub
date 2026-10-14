@@ -1,10 +1,19 @@
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
+import Loader from '@/components/ui/Loader'
 import MetricCard from '@/components/ui/MetricCard'
 import { useAuth } from '@/hooks/useAuth'
 
 export default function Home() {
-  const { user } = useAuth()
-  const cible = user ? (user.role === 'ADMIN' ? '/admin' : '/famille') : '/inscription'
+  const { user, loading } = useAuth()
+
+  if (loading) return <Loader />
+
+  if (user?.role === 'ADMIN') {
+    return <Navigate to="/admin" replace />
+  }
+  if (user?.role === 'FAMILLE') {
+    return <Navigate to="/famille" replace />
+  }
 
   return (
     <section className="landing">
@@ -16,8 +25,8 @@ export default function Home() {
           vous savez où elle en est, vous recevez le scan dès la signature, puis l&apos;original.
         </p>
         <div className="landing__actions">
-          <Link className="btn btn-primary btn-lg" to={cible}>
-            {user ? 'Mon espace' : 'Faire une demande'}
+          <Link className="btn btn-primary btn-lg" to="/inscription">
+            Faire une demande
           </Link>
           <Link className="btn btn-secondary btn-lg" to="/tarifs">
             Voir les tarifs

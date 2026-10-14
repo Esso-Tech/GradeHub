@@ -6,7 +6,7 @@ export default function PublicShell() {
     <div className="public-shell">
       <header className="public-top">
         <Link to="/" className="public-brand">
-          <IconCap className="brand-cap" />
+          <IconCap className="brand-cap" size={24} />
           <span>GRADE HUB</span>
         </Link>
         <nav className="public-nav" aria-label="Navigation publique">
@@ -20,7 +20,7 @@ export default function PublicShell() {
         <Outlet />
       </main>
       <footer className="public-footer">
-        © GRADE HUB · Documents scolaires à Lomé
+        © GRADE HUB
       </footer>
     </div>
   )

@@ -3,6 +3,7 @@ import Loader from '@/components/ui/Loader'
 import Notice from '@/components/ui/Notice'
 import StatutBadge from '@/components/ui/StatutBadge'
 import PageHeader from '@/components/ui/PageHeader'
+import Select from '@/components/ui/Select'
 import WidgetCard from '@/components/ui/WidgetCard'
 import { useFetch } from '@/hooks/useFetch'
 import { listerDemandesAdmin } from '@/features/admin/admin.api'
@@ -38,9 +39,9 @@ export default function ListeDemandes() {
       <WidgetCard title="Liste des dossiers">
         <div className="table-toolbar">
           <label className="sr-only" htmlFor="filtre-statut">État</label>
-          <select
+          <Select
             id="filtre-statut"
-            className="input input-search"
+            className="select-input--toolbar"
             value={statut}
             onChange={(e) => {
               const next = new URLSearchParams(params)
@@ -53,7 +54,7 @@ export default function ListeDemandes() {
             {Object.entries(STATUTS).map(([k, v]) => (
               <option key={k} value={k}>{v.label}</option>
             ))}
-          </select>
+          </Select>
           <input
             className="input input-search"
             placeholder="Rechercher…"

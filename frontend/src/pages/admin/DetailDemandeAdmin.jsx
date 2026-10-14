@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import Button from '@/components/ui/Button'
 import Field from '@/components/ui/Field'
+import Select from '@/components/ui/Select'
 import Loader from '@/components/ui/Loader'
 import Notice from '@/components/ui/Notice'
 import StatutBadge from '@/components/ui/StatutBadge'
@@ -175,11 +176,11 @@ export default function DetailDemandeAdmin() {
         </p>
         <Field label="Échéance extérieure">
           {(fid) => (
-            <select id={fid} className="input" value={resultat.tenue}
+            <Select id={fid} value={resultat.tenue}
               onChange={(e) => setResultat({ ...resultat, tenue: e.target.value })}>
               <option value="oui">Tenue</option>
               <option value="non">Manquée ou non tenue</option>
-            </select>
+            </Select>
           )}
         </Field>
         <label className="check">

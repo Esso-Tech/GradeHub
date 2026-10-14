@@ -43,9 +43,21 @@ export function AuthProvider({ children }) {
     return user
   }, [])
 
+  const supprimerCompte = useCallback(async (motDePasse) => {
+    await authService.supprimerCompte(motDePasse)
+    setToken(null)
+    setUser(null)
+  }, [])
+
+  const mettreAJourProfil = useCallback(async (data) => {
+    const updated = await authService.mettreAJourProfil(data)
+    setUser(updated)
+    return updated
+  }, [])
+
   const value = useMemo(
-    () => ({ user, loading, login, register, logout }),
-    [user, loading, login, register, logout],
+    () => ({ user, loading, login, register, logout, supprimerCompte, mettreAJourProfil }),
+    [user, loading, login, register, logout, supprimerCompte, mettreAJourProfil],
   )
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

@@ -135,7 +135,7 @@ export default function Dashboard() {
 
           <WidgetCard title="Informations utiles">
             <ul className="link-list">
-              <li><Link to="/tarifs">Tarifs et formules</Link></li>
+              <li><Link to="/famille/tarifs">Tarifs et formules</Link></li>
               <li><Link to="/famille/nouvelle">Déposer une nouvelle demande</Link></li>
             </ul>
           </WidgetCard>

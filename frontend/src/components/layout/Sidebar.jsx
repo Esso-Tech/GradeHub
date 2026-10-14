@@ -6,7 +6,7 @@ import { NAV_ADMIN, NAV_FAMILLE } from './nav-config'
 function NavGroup({ item, onNavigate }) {
   const location = useLocation()
   const childActive = item.children?.some((c) =>
-    c.end ? location.pathname === c.to : location.pathname.startsWith(c.to),
+    c.end ? location.pathname === c.to : location.pathname.startsWith(c.to.split('?')[0]),
   )
   const [open, setOpen] = useState(childActive ?? true)
 
@@ -55,18 +55,17 @@ function NavItem({ item, onNavigate }) {
   )
 }
 
-export default function Sidebar({ role, open, onClose }) {
-  const nav = role === 'ADMIN' ? NAV_ADMIN : NAV_FAMILLE
-  const home = role === 'ADMIN' ? '/admin' : '/famille'
+export default function Sidebar({ shell, open, onClose }) {
+  const nav = shell.variant === 'admin' ? NAV_ADMIN : NAV_FAMILLE
 
   return (
     <>
       <div className={`sidebar-backdrop ${open ? 'visible' : ''}`} onClick={onClose} aria-hidden="true" />
-      <aside className={`sidebar ${open ? 'sidebar-open' : ''}`} aria-label="Menu principal">
+      <aside className={`sidebar ${open ? 'sidebar-open' : ''}`} aria-label={shell.portalLabel}>
         <div className="sidebar-head">
-          <NavLink to={home} className="sidebar-brand" onClick={onClose}>
-            <IconCap className="brand-cap" />
-            <span>GRADE HUB</span>
+          <NavLink to={shell.home} className="sidebar-brand" onClick={onClose}>
+            <IconCap className="brand-cap" size={26} />
+            <span className="sidebar-brand-name">GRADE HUB</span>
           </NavLink>
           <button type="button" className="sidebar-toggle" onClick={onClose} aria-label="Fermer le menu">
             <IconMenu />
@@ -77,7 +76,6 @@ export default function Sidebar({ role, open, onClose }) {
             <NavItem key={item.id ?? item.to} item={item} onNavigate={onClose} />
           ))}
         </nav>
-        <p className="sidebar-footer">© GRADE HUB · Lomé</p>
       </aside>
     </>
   )

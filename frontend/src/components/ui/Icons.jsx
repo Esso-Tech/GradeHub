@@ -188,6 +188,14 @@ export function IconChevronRight(props) {
   )
 }
 
+export function IconChevronDown(props) {
+  return (
+    <Svg {...props}>
+      <path d="M7 10l5 5 5-5H7z" />
+    </Svg>
+  )
+}
+
 export function IconPlus(props) {
   return (
     <Svg {...props}>

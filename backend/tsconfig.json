@@ -8,13 +8,9 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": ["node"]
   },
-  "include": [
-    "src",
-    "prisma/seed.ts",
-    "prisma/demo.ts",
-    "scripts",
-    "tests"
-  ]
+  "include": ["src", "prisma/seed.ts", "prisma/demo.ts", "scripts"],
+  "exclude": ["node_modules", "dist", "tests"]
 }

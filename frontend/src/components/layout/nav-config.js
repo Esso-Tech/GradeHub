@@ -8,7 +8,7 @@ export const NAV_FAMILLE = [
       { to: '/famille/nouvelle', label: 'Nouvelle demande' },
     ],
   },
-  { to: '/tarifs', label: 'Tarifs', icon: 'account' },
+  { to: '/famille/tarifs', label: 'Tarifs', icon: 'account' },
 ]
 
 export const NAV_ADMIN = [
@@ -26,41 +26,43 @@ export const NAV_ADMIN = [
   { to: '/admin/demandes?statut=PIECE_MANQUANTE', label: 'Avis', icon: 'notice' },
 ]
 
-export const BREADCRUMBS = {
+const CRUMBS_PUBLIC = {
   '/': [{ label: 'Accueil' }],
   '/tarifs': [{ label: 'Accueil', to: '/' }, { label: 'Tarifs' }],
   '/connexion': [{ label: 'Accueil', to: '/' }, { label: 'Connexion' }],
   '/inscription': [{ label: 'Accueil', to: '/' }, { label: 'Inscription' }],
-  '/famille': [{ label: 'Accueil', to: '/' }, { label: 'Famille' }, { label: 'Mes demandes' }],
-  '/famille/nouvelle': [{ label: 'Accueil', to: '/' }, { label: 'Famille' }, { label: 'Nouvelle demande' }],
-  '/admin': [{ label: 'Accueil', to: '/' }, { label: 'Administration' }, { label: 'Vue générale' }],
-  '/admin/demandes': [{ label: 'Accueil', to: '/' }, { label: 'Administration' }, { label: 'Demandes' }],
-  '/admin/etablissements': [{ label: 'Accueil', to: '/' }, { label: 'Administration' }, { label: 'Établissements' }],
-  '/admin/statistiques': [{ label: 'Accueil', to: '/' }, { label: 'Administration' }, { label: 'Statistiques' }],
 }
 
-export function breadcrumbsForPath(pathname) {
-  if (BREADCRUMBS[pathname]) return BREADCRUMBS[pathname]
+const CRUMBS_FAMILLE = {
+  '/famille': [{ label: 'Famille' }, { label: 'Mes demandes' }],
+  '/famille/nouvelle': [{ label: 'Famille', to: '/famille' }, { label: 'Nouvelle demande' }],
+  '/famille/tarifs': [{ label: 'Famille', to: '/famille' }, { label: 'Tarifs' }],
+  '/famille/parametres': [{ label: 'Famille', to: '/famille' }, { label: 'Paramètres du compte' }],
+}
+
+const CRUMBS_ADMIN = {
+  '/admin': [{ label: 'Administration' }, { label: 'Vue générale' }],
+  '/admin/demandes': [{ label: 'Administration', to: '/admin' }, { label: 'Demandes' }],
+  '/admin/etablissements': [{ label: 'Administration', to: '/admin' }, { label: 'Établissements' }],
+  '/admin/statistiques': [{ label: 'Administration', to: '/admin' }, { label: 'Statistiques' }],
+  '/admin/parametres': [{ label: 'Administration', to: '/admin' }, { label: 'Paramètres du compte' }],
+}
+
+export function breadcrumbsForPath(pathname, variant = 'public') {
+  const map =
+    variant === 'admin' ? CRUMBS_ADMIN : variant === 'famille' ? CRUMBS_FAMILLE : CRUMBS_PUBLIC
+  if (map[pathname]) return map[pathname]
+
   if (pathname.startsWith('/famille/demandes/') && pathname.endsWith('/paiement')) {
-    return [
-      { label: 'Accueil', to: '/' },
-      { label: 'Famille', to: '/famille' },
-      { label: 'Paiement' },
-    ]
+    return [{ label: 'Famille', to: '/famille' }, { label: 'Paiement' }]
   }
   if (pathname.startsWith('/famille/demandes/')) {
-    return [
-      { label: 'Accueil', to: '/' },
-      { label: 'Famille', to: '/famille' },
-      { label: 'Détail demande' },
-    ]
+    return [{ label: 'Famille', to: '/famille' }, { label: 'Détail demande' }]
   }
   if (pathname.startsWith('/admin/demandes/')) {
-    return [
-      { label: 'Accueil', to: '/' },
-      { label: 'Administration', to: '/admin' },
-      { label: 'Détail demande' },
-    ]
+    return [{ label: 'Administration', to: '/admin' }, { label: 'Détail demande' }]
   }
-  return [{ label: 'Accueil', to: '/' }, { label: 'Page' }]
+  return variant === 'admin'
+    ? [{ label: 'Administration', to: '/admin' }, { label: 'Page' }]
+    : [{ label: 'Famille', to: '/famille' }, { label: 'Page' }]
 }

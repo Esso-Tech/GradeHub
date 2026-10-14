@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Button from '@/components/ui/Button'
 import Field from '@/components/ui/Field'
 import Notice from '@/components/ui/Notice'
+import Select from '@/components/ui/Select'
 import MandatForm from './MandatForm'
 import { creerDemande, devis } from '@/features/demandes/demandes.api'
 import { messageErreur } from '@/services/api'
@@ -68,19 +69,19 @@ export default function DemandeForm({ etablissements }) {
         <legend>Le document</legend>
         <Field label="Établissement">
           {(id) => (
-            <select id={id} className="input" required value={form.etablissementId}
+            <Select id={id} required value={form.etablissementId}
               onChange={(e) => set('etablissementId', e.target.value)}>
-              <option value="">Choisir…</option>
+              <option value="">Choisir un établissement</option>
               {etablissements.map((e) => <option key={e.id} value={e.id}>{e.nom}</option>)}
-            </select>
+            </Select>
           )}
         </Field>
         <Field label="Type de document">
           {(id) => (
-            <select id={id} className="input" value={form.typeDocument}
+            <Select id={id} value={form.typeDocument}
               onChange={(e) => set('typeDocument', e.target.value)}>
               {Object.entries(TYPES_DOCUMENT).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-            </select>
+            </Select>
           )}
         </Field>
         <Field label="Année de sortie ou d'examen">
