@@ -79,6 +79,8 @@ Application : http://4.227.180.151
 
 Checklist sécurité : [docs/SECURITE.md](docs/SECURITE.md) (`.env.deploy`, `RUN_DEMO=false`, HTTPS avec domaine, mots de passe forts).
 
+Après un déploiement, purge Cloudflare et instructions visiteurs : [docs/MISE-A-JOUR-VISITEURS.md](docs/MISE-A-JOUR-VISITEURS.md).
+
 ## Démo
 
 ```bash
