@@ -16,7 +16,7 @@ export default function PublicShell() {
           </Link>
         </nav>
       </header>
-      <main className="public-main animate-in">
+      <main className="public-main public-main--fluid animate-in">
         <Outlet />
       </main>
       <footer className="public-footer">

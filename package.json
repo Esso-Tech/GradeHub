@@ -12,6 +12,11 @@
     "demo": "npm --prefix backend run demo",
     "demo:reset": "npm --prefix backend run demo:reset",
     "test": "npm --prefix backend test",
-    "build:frontend": "npm --prefix frontend run build"
+    "build:frontend": "npm --prefix frontend run build",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:seed": "docker compose exec backend npx tsx prisma/seed.ts",
+    "docker:demo": "docker compose exec backend npx tsx prisma/demo.ts"
   }
 }

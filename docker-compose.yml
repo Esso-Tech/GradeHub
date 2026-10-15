@@ -1,21 +1,47 @@
 services:
   db:
     image: postgres:16
+    container_name: gradehub-db
     environment:
       POSTGRES_USER: gradehub
       POSTGRES_PASSWORD: gradehub
       POSTGRES_DB: gradehub
-    ports: ["5432:5432"]
+    ports: ["5434:5432"]
     volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gradehub -d gradehub"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build: ./backend
+    container_name: gradehub-backend
     env_file: ./backend/.env
     environment:
+      NODE_ENV: production
       DATABASE_URL: postgresql://gradehub:gradehub@db:5432/gradehub
-    depends_on: [db]
+      CORS_ORIGIN: http://localhost:8081
+      STORAGE_DIR: /app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
     ports: ["4000:4000"]
     volumes: ["./backend/uploads:/app/uploads"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 25s
+
+  frontend:
+    build: ./frontend
+    container_name: gradehub-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports: ["8081:80"]
 
 volumes:
   pgdata:
