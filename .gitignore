@@ -6,3 +6,5 @@ backend/.env
 backend/uploads/*
 !backend/uploads/.gitkeep
 *.log
+*.pem
+GradeHub_key.pem
