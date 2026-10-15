@@ -1,0 +1,20 @@
+# Production (VM). Usage :
+# docker compose --env-file .env.deploy -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Avec HTTPS : ajouter -f docker-compose.ssl.yml si DOMAIN est défini
+
+services:
+  db:
+    ports: !override []
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Définir POSTGRES_PASSWORD dans .env.deploy}
+
+  backend:
+    environment:
+      NODE_ENV: production
+      CORS_ORIGIN: ${PUBLIC_ORIGIN:?Définir PUBLIC_ORIGIN dans .env.deploy}
+      DATABASE_URL: postgresql://gradehub:${POSTGRES_PASSWORD}@db:5432/gradehub
+    ports: !override []
+
+  frontend:
+    ports: !override
+      - "80:80"

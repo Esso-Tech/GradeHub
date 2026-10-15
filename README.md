@@ -64,6 +64,21 @@ npm run docker:logs        # journaux
 npm run docker:down        # arrêter
 ```
 
+## Déploiement Azure VM
+
+Clé SSH `GradeHub_key.pem` à la racine du dépôt, utilisateur `azureuser`.
+
+```bash
+./scripts/deploy-azure.sh
+# ou : VM_HOST=4.227.180.151 PUBLIC_ORIGIN=http://4.227.180.151 ./scripts/deploy-azure.sh
+```
+
+Sur le portail Azure (**Inbound**), ouvrir **TCP 80** et **443** ; **restreindre SSH (22)** à votre IP si possible. Ne pas exposer les ports **4000** (API) ni **5432** (PostgreSQL).
+
+Application : http://4.227.180.151
+
+Checklist sécurité : [docs/SECURITE.md](docs/SECURITE.md) (`.env.deploy`, `RUN_DEMO=false`, HTTPS avec domaine, mots de passe forts).
+
 ## Démo
 
 ```bash

@@ -13,15 +13,15 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'prompt', // l'utilisateur choisit de mettre à jour
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
       manifest: {
         name: 'GRADE HUB',
         short_name: 'GRADE HUB',
         description: 'Suivez vos demandes de documents scolaires',
         lang: 'fr',
-        theme_color: '#2f6f1f',
-        background_color: '#ffffff',
+        theme_color: '#071e33',
+        background_color: '#071e33',
         display: 'standalone',
         start_url: '/',
         icons: [
@@ -36,12 +36,21 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // Ne jamais mettre en cache les données personnelles
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
         navigateFallbackDenylist: [/^\/api/],
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.startsWith('/api'),
             handler: 'NetworkOnly',
+          },
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'gradehub-pages',
+              networkTimeoutSeconds: 5,
+            },
           },
         ],
       },
