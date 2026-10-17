@@ -10,6 +10,7 @@ const TYPES = {
   RESULTAT_ENREGISTRE: 'Résultat enregistré',
   PAIEMENT_CONFIRME: 'Paiement confirmé',
   PAIEMENT_REFUSE: 'Paiement refusé',
+  PAIEMENT_MONTANT_INCOHERENT: 'Montant de paiement incohérent',
   PAIEMENT_ECHOUE: 'Paiement échoué',
   RAPPEL_ECHEANCE: 'Rappel de date limite',
 }

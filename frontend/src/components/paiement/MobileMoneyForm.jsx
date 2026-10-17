@@ -22,7 +22,7 @@ export default function MobileMoneyForm({ montantLabel, onSubmit, loading }) {
             </label>
           ))}
         </div>
-        <Field label="Numéro qui paie" hint="Vous recevrez une demande de confirmation sur ce numéro.">
+        <Field label="Numéro qui paie" hint="Le numéro doit être celui de l'opérateur choisi. Vous y recevrez une demande de confirmation.">
           {(id) => (
             <input id={id} className="input" type="tel" inputMode="tel" required
               pattern="^\+?[0-9 ]{8,15}$" placeholder="+228 90 00 00 00"

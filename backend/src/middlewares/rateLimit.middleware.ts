@@ -14,3 +14,11 @@ export const limiteApi = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 })
+
+export const limiteContact = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { erreur: 'Trop de messages envoyés. Réessayez dans quelques minutes.' },
+})

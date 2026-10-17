@@ -103,3 +103,38 @@ Les chiffres de la démo sont fictifs : ils ne sont pas des résultats du test M
 ## Documentation du projet
 
 Cahier des charges, arborescence et document d'intégration PWA : documents partagés dans la conversation.
+
+## Design du site (vert et orange)
+
+- **Palette** : vert de marque `#2f6f1f` ; **orange** `#f28c28` pour mettre en évidence les textes importants (classes `.hl` surlignage, `.mark` prix, `.tag--orange`, bouton `.btn-orange`). Tout est défini dans `:root` de `frontend/src/styles/index.css`.
+- **Pages publiques** : Accueil, Services, Contact, Créer un compte, Connexion (navbar et pied de page dans `components/layout/PublicShell.jsx`, styles dans `styles/site.css`).
+- **Coordonnées** (pied de page et page Contact) : à saisir dans l'admin, **Contenu du site** (voir plus bas). `frontend/src/config/site.js` ne sert que de contenu de secours.
+- **Polices** : Figtree et Bricolage Grotesque, auto-hébergées (`styles/fonts.css`) et mises en cache par le PWA : le site garde son apparence hors connexion.
+- **Logo** : `components/ui/Logo.jsx` et `frontend/brand/logo.svg`. Les icônes PWA se régénèrent avec `python3 frontend/scripts/generate-favicons.py`.
+- **Illustrations** : `components/illustrations/` (SVG), remplaçables par des photos.
+
+## Remplir les pages Services et Contact
+
+Le contenu ne se modifie plus dans le code : tout se fait depuis l'espace admin.
+
+1. Connectez-vous en administrateur, puis ouvrez **Contenu du site** (`/admin/site`).
+2. **Coordonnées** : téléphone, WhatsApp, e-mail, adresse, horaires. Un champ vide n'est pas affiché. Elles apparaissent dans le pied de page et sur la page Contact (un numéro WhatsApp active le bouton « Écrire sur WhatsApp »).
+3. **Services** : deux listes de cartes (documents suivis, prestations incluses), avec titre, description, étiquette facultative, ordre et mise en évidence orange. Une liste vide masque sa section.
+4. **Messages** (`/admin/messages`) : les messages envoyés depuis la page Contact, avec « Nouveau », réponse par e-mail, appel ou WhatsApp, et « Marquer comme lu ».
+
+Côté API :
+
+| Route | Accès | Rôle |
+|---|---|---|
+| `GET /api/site` | public | contenu Services et Contact |
+| `POST /api/contact` | public (5 messages / 15 min, champ piège anti-robots) | message du formulaire |
+| `PUT /api/admin/site/contact`, `PUT /api/admin/site/services` | admin | enregistrer le contenu |
+| `GET /api/admin/messages`, `PATCH /api/admin/messages/:id` | admin | lire et marquer les messages |
+
+Deux tables s'ajoutent (`ReglageSite`, `MessageContact`) : `prisma db push`, déjà lancé au démarrage du conteneur, les crée. Tant que rien n'est enregistré, le site affiche le contenu par défaut (`backend/src/services/site.content.ts`, copié dans `frontend/src/config/site.js` comme contenu de secours).
+
+## Paiement T-Money / Flooz et e-mails
+
+- **Paiement réel** : `PAYMENT_PROVIDER=paygate` active T-Money et Flooz via PayGate Global (compte à activer chez eux). Par défaut `simulation`.
+- **Alerte e-mail** à chaque nouveau message de la page Contact : renseigner `SMTP_*` et `MAIL_FROM` dans `backend/.env`.
+- Mode d'emploi complet, sécurité, frais et points à vérifier : [`docs/PAIEMENT-ET-EMAIL.md`](docs/PAIEMENT-ET-EMAIL.md).

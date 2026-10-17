@@ -5,9 +5,11 @@ import demandes from './demandes.routes'
 import paiements from './paiements.routes'
 import documents from './documents.routes'
 import admin from './admin.routes'
+import site from './site.routes'
 
 const r = Router()
 r.get('/health', (_req, res) => res.json({ ok: true }))
+r.use(site)
 r.use('/auth', auth)
 r.use('/etablissements', etablissements)
 r.use('/demandes', demandes)

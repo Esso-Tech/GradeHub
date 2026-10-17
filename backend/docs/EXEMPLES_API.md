@@ -60,3 +60,18 @@ curl -s localhost:4000/api/admin/stats -H "Authorization: Bearer $ADMIN"
 - Webhook sans signature valide : réponse 401.
 - Express (`"urgence":true`) : refusé (422) tant que `FRAIS_EXPRESS_XOF=0`.
 - Lien du scan : `GET /api/documents/demande/<id>/lien`, valable 10 minutes.
+
+## Paiement PayGate (mode `paygate`)
+```bash
+# La famille lance le paiement : le client reçoit la demande sur son téléphone
+curl -s -X POST localhost:4000/api/paiements -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"demandeId":"<id>","type":"SUIVI","operateur":"FLOOZ","telephone":"+228 90 12 34 56"}'
+# → { "id": "<paiementId>", "referenceExterne": "<tx_reference PayGate>", "statut": "EN_ATTENTE", ... }
+
+# La page interroge l'état (le serveur revérifie auprès de PayGate)
+curl -s localhost:4000/api/paiements/<paiementId>/statut -H "Authorization: Bearer $TOKEN"
+
+# Rappel de PayGate (le contenu n'est pas cru : le statut est revérifié)
+curl -s -X POST "localhost:4000/api/webhooks/paiement/paygate?k=$PAYGATE_WEBHOOK_KEY" \
+  -H 'Content-Type: application/json' -d '{"identifier":"<paiementId>"}'
+```

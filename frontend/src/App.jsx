@@ -1,5 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from '@/context/AuthContext'
+import { SiteProvider } from '@/context/SiteContext'
 import AppRoutes from '@/routes'
 import InstallPrompt from '@/components/pwa/InstallPrompt'
 import UpdatePrompt from '@/components/pwa/UpdatePrompt'
@@ -9,10 +10,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <OfflineBanner />
-        <AppRoutes />
-        <InstallPrompt />
-        <UpdatePrompt />
+        <SiteProvider>
+          <OfflineBanner />
+          <AppRoutes />
+          <InstallPrompt />
+          <UpdatePrompt />
+        </SiteProvider>
       </AuthProvider>
     </BrowserRouter>
   )

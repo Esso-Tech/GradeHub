@@ -20,8 +20,8 @@ export default defineConfig({
         short_name: 'GRADE HUB',
         description: 'Suivez vos demandes de documents scolaires',
         lang: 'fr',
-        theme_color: '#071e33',
-        background_color: '#071e33',
+        theme_color: '#22520f',
+        background_color: '#ffffff',
         display: 'standalone',
         start_url: '/',
         icons: [
@@ -36,6 +36,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Les polices (woff2) sont mises en cache : le site garde son apparence hors connexion
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,

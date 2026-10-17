@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import AppLayout from '@/components/layout/AppLayout'
 import AdminShell from '@/components/layout/AdminShell'
 import FamilleShell from '@/components/layout/FamilleShell'
@@ -11,6 +11,8 @@ import Home from '@/pages/public/Home'
 import Login from '@/pages/public/Login'
 import Register from '@/pages/public/Register'
 import Tarifs from '@/pages/public/Tarifs'
+import Services from '@/pages/public/Services'
+import Contact from '@/pages/public/Contact'
 
 import Dashboard from '@/pages/famille/Dashboard'
 import NouvelleDemande from '@/pages/famille/NouvelleDemande'
@@ -24,6 +26,8 @@ const DetailDemandeAdmin = lazy(() => import('@/pages/admin/DetailDemandeAdmin')
 const Etablissements = lazy(() => import('@/pages/admin/Etablissements'))
 const Statistiques = lazy(() => import('@/pages/admin/Statistiques'))
 const ParametresAdmin = lazy(() => import('@/pages/admin/Parametres'))
+const ContenuSite = lazy(() => import('@/pages/admin/ContenuSite'))
+const Messages = lazy(() => import('@/pages/admin/Messages'))
 
 export default function AppRoutes() {
   return (
@@ -31,10 +35,12 @@ export default function AppRoutes() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/tarifs" element={<Tarifs />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/tarifs" element={<Navigate to="/services#tarifs" replace />} />
           <Route path="/connexion" element={<Login />} />
           <Route path="/inscription" element={<Register />} />
-          <Route path="*" element={<p>Page introuvable.</p>} />
+          <Route path="*" element={<section className="section container"><h1>Page introuvable</h1><p><a href="/">Retour à l'accueil</a></p></section>} />
         </Route>
 
         <Route element={<ProtectedRoute />}>
@@ -56,6 +62,8 @@ export default function AppRoutes() {
               <Route path="/admin/demandes/:id" element={<DetailDemandeAdmin />} />
               <Route path="/admin/etablissements" element={<Etablissements />} />
               <Route path="/admin/statistiques" element={<Statistiques />} />
+              <Route path="/admin/site" element={<ContenuSite />} />
+              <Route path="/admin/messages" element={<Messages />} />
               <Route path="/admin/parametres" element={<ParametresAdmin />} />
             </Route>
           </Route>

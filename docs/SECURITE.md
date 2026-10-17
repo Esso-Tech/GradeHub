@@ -33,3 +33,5 @@ Puis aligner `POSTGRES_PASSWORD` et `DATABASE_URL` dans `.env.deploy` / compose 
 
 - Changer le mot de passe admin après installation.
 - Supprimer les comptes démo si créés par erreur : `npm run demo:reset` (depuis le conteneur backend).
+- **Paiement PayGate** : `PAYGATE_AUTH_TOKEN` et `PAYGATE_WEBHOOK_KEY` (16 caractères minimum) dans `backend/.env` uniquement ; ne jamais les committer. L'URL de rappel contient `?k=<PAYGATE_WEBHOOK_KEY>` : la traiter comme un secret.
+- **E-mail** : `SMTP_PASS` dans `backend/.env` uniquement.

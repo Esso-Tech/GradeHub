@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { IconCap, IconMenu, NavIcon } from '@/components/ui/Icons'
+import { IconMenu, NavIcon } from '@/components/ui/Icons'
+import { LogoMark } from '@/components/ui/Logo'
 import { NAV_ADMIN, NAV_FAMILLE } from './nav-config'
 
 function NavGroup({ item, onNavigate }) {
@@ -64,7 +65,7 @@ export default function Sidebar({ shell, open, onClose }) {
       <aside className={`sidebar ${open ? 'sidebar-open' : ''}`} aria-label={shell.portalLabel}>
         <div className="sidebar-head">
           <NavLink to={shell.home} className="sidebar-brand" onClick={onClose}>
-            <IconCap className="brand-cap" size={26} />
+            <LogoMark size={30} tone="light" />
             <span className="sidebar-brand-name">GRADE HUB</span>
           </NavLink>
           <button type="button" className="sidebar-toggle" onClick={onClose} aria-label="Fermer le menu">

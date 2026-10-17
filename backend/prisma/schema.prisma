@@ -194,3 +194,23 @@ model Notification {
   envoyee      Boolean  @default(false)
   createdAt    DateTime @default(now())
 }
+
+/// Contenu du site modifiable par l'administrateur : clés « contact » et « services ».
+model ReglageSite {
+  cle       String   @id
+  valeur    Json
+  updatedAt DateTime @updatedAt
+}
+
+/// Messages envoyés depuis la page Contact.
+model MessageContact {
+  id        String   @id @default(cuid())
+  nom       String
+  contact   String
+  sujet     String
+  message   String
+  lu        Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([lu, createdAt])
+}

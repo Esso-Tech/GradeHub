@@ -24,10 +24,14 @@ export const NAV_ADMIN = [
   { to: '/admin/demandes', label: 'Demandes', icon: 'exam' },
   { to: '/admin/etablissements', label: 'Établissements', icon: 'class' },
   { to: '/admin/demandes?statut=PIECE_MANQUANTE', label: 'Avis', icon: 'notice' },
+  { to: '/admin/messages', label: 'Messages', icon: 'notice' },
+  { to: '/admin/site', label: 'Contenu du site', icon: 'class' },
 ]
 
 const CRUMBS_PUBLIC = {
   '/': [{ label: 'Accueil' }],
+  '/services': [{ label: 'Accueil', to: '/' }, { label: 'Services' }],
+  '/contact': [{ label: 'Accueil', to: '/' }, { label: 'Contact' }],
   '/tarifs': [{ label: 'Accueil', to: '/' }, { label: 'Tarifs' }],
   '/connexion': [{ label: 'Accueil', to: '/' }, { label: 'Connexion' }],
   '/inscription': [{ label: 'Accueil', to: '/' }, { label: 'Inscription' }],
@@ -45,6 +49,8 @@ const CRUMBS_ADMIN = {
   '/admin/demandes': [{ label: 'Administration', to: '/admin' }, { label: 'Demandes' }],
   '/admin/etablissements': [{ label: 'Administration', to: '/admin' }, { label: 'Établissements' }],
   '/admin/statistiques': [{ label: 'Administration', to: '/admin' }, { label: 'Statistiques' }],
+  '/admin/site': [{ label: 'Administration', to: '/admin' }, { label: 'Contenu du site' }],
+  '/admin/messages': [{ label: 'Administration', to: '/admin' }, { label: 'Messages' }],
   '/admin/parametres': [{ label: 'Administration', to: '/admin' }, { label: 'Paramètres du compte' }],
 }
 
